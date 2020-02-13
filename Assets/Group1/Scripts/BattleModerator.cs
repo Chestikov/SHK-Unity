@@ -5,7 +5,7 @@ class BattleModerator : MonoBehaviour
     [SerializeField] private Player _player;
     [SerializeField] private EnemyCounter _enemyCounter;
 
-    void Update()
+    private void Update()
     {
         for (int index = 0; index < _enemyCounter.Enemies.Count; index++)
         {

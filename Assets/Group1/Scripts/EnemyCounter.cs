@@ -6,19 +6,28 @@ using UnityEngine;
 public class EnemyCounter : MonoBehaviour
 {
     [SerializeField] private string _enemyTagName = "Enemy";
+    [SerializeField] private int _enemiesLeftToWin = 0;
 
     public event Action EnemiesDefeated;
 
     public List<Enemy> Enemies { get; private set; }
 
-    private void Start()
+    private void OnEnable()
     {
-        Enemies = GameObject.FindGameObjectsWithTag(_enemyTagName).Select(x => x.GetComponent<Enemy>()).ToList();
+        Enemies = GetEnemiesByTag(_enemyTagName);
 
         foreach (var enemy in Enemies)
         {
             enemy.Died += OnEnemyDied;
         }
+    }
+
+    private List<Enemy> GetEnemiesByTag(string tagName)
+    {
+        List<Enemy> enemies = GameObject.FindGameObjectsWithTag(tagName).Select(x => x.GetComponent<Enemy>()).ToList();
+        enemies.RemoveAll(x => x == null);
+
+        return enemies;
     }
 
     private void OnDisable()
@@ -34,7 +43,7 @@ public class EnemyCounter : MonoBehaviour
         enemy.Died -= OnEnemyDied;
         Enemies.Remove(enemy);
 
-        if (!Enemies.Any())
+        if (Enemies.Count == _enemiesLeftToWin)
         {
             EnemiesDefeated?.Invoke();
         }
