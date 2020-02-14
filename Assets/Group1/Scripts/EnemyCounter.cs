@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class EnemyCounter : MonoBehaviour
 {
-    [SerializeField] private string _enemyTagName = "Enemy";
     [SerializeField] private int _enemiesLeftToWin = 0;
 
     public event Action EnemiesDefeated;
@@ -14,7 +13,7 @@ public class EnemyCounter : MonoBehaviour
 
     private void OnEnable()
     {
-        Enemies = GetEnemiesByTag(_enemyTagName);
+        Enemies = GetEnemies();
 
         foreach (var enemy in Enemies)
         {
@@ -22,9 +21,9 @@ public class EnemyCounter : MonoBehaviour
         }
     }
 
-    private List<Enemy> GetEnemiesByTag(string tagName)
+    private List<Enemy> GetEnemies()
     {
-        List<Enemy> enemies = GameObject.FindGameObjectsWithTag(tagName).Select(x => x.GetComponent<Enemy>()).ToList();
+        List<Enemy> enemies = FindObjectsOfType<Enemy>().Select(x => x.GetComponent<Enemy>()).ToList();
         enemies.RemoveAll(x => x == null);
 
         return enemies;
